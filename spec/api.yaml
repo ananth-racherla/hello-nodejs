@@ -1,0 +1,193 @@
+openapi: 3.0.2
+info:
+  description: |
+    An API spec for product registration flows
+  version: "1.0.0"
+  title: Product Registration
+  license:
+    name: MIT
+servers:
+  - description: Mock API Server on SwaggerHub
+    url: https://virtserver.swaggerhub.com/ananthr/product/1.0.0
+  - description: local webserver
+    url: http://localhost:3000
+  - description: local ingress controller on kubernetes
+    url: http://hello-node.localhost/
+externalDocs:
+  description: Additional documentation on Github
+  url: 'https://github.com/ananth-racherla/hello-nodejs'
+tags:
+  - name: product
+    description: product registration apis
+  - name: system
+    description: App health APIs
+paths:
+  /beta/register:
+    post:
+      tags:
+        - product
+      summary: Beta registration API
+      description: |
+        Allow developers to register for product betas. The API can be invoked anonymously.
+      operationId: register
+      responses:
+        '200':
+          description: registeration successful
+        '400':
+          description: invalid client input
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterationRequest'
+        description: Registration details
+        required: true
+      security:
+        - api_key: []
+  /beta/getUserList:
+    get:
+      tags:
+        - product
+      summary: Beta registration API
+      description: |
+        Allow authenticated users to retrieve a list of beta registrants.
+      operationId: userList
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+          required: false
+          description: The number of items to skip before starting to collect the result set.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          required: false
+          description: The number of items to return.
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '400':
+          description: invalid client input
+      security:
+        - api_key: []
+        - ananthr_auth:
+            - 'read:users'
+  '/healthz':
+    get:
+      tags:
+        - system
+      summary: Healthcheck
+      responses:
+        '200':
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '500':
+          description: Not healthy
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique system/db identifier for the user
+        firstName:
+          type: string
+          example: Alice
+        lastName:
+          type: string
+          example: Smith
+        email:
+          type: string
+          description: User Email address
+        twitter:
+          type: string
+          description: Twitter handle
+        instagram:
+          type: string
+          description: Instagram handle
+        location:
+          type: string
+          description: User Location
+          example: Austin, TX
+        devEnvironment:
+          type: string
+          description: User's Development Environment
+          example: Visual Studio Code/Javascript
+      xml:
+        name: User
+    RegisterationRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: Alice
+        lastName:
+          type: string
+          example: Smith
+        email:
+          type: string
+          description: User Email address
+          example: asmith@example.com
+        twitter:
+          type: string
+          description: Twitter handle
+          example: alicelovescoding
+        instagram:
+          type: string
+          description: Instagram handle
+          example: alicesmith
+        location:
+          type: string
+          description: User Location
+          example: Austin, TX
+        devEnvironment:
+          type: string
+          description: User's Development Environment
+          example: Visual Studio Code/Javascript
+      xml:
+        name: RegisterationRequest
+    ApiResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Success
+  requestBodies:
+    UserArray:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+      description: List of user object
+      required: true
+  securitySchemes:
+    ananthr_auth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: 'https://ananthr.com/oauth2/token'
+          scopes:
+            'read:users': retrieve a list of user accounts
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
