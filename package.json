@@ -1,5 +1,5 @@
 {
-  "name": "product-registration",
+  "name": "hello-node",
   "version": "1.0.0",
   "description": "Simple REST API Implementation in NodeJS",
   "main": "src/index.js",
@@ -24,6 +24,7 @@
     "express": "^4.17.1",
     "express-prom-bundle": "^6.3.4",
     "mongoose": "^5.11.15",
+    "mongoose-encryption": "^2.0.3",
     "object-mapper": "^6.2.0",
     "prom-client": "^13.1.0"
   },

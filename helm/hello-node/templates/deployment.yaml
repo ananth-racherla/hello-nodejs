@@ -52,6 +52,10 @@ spec:
             value: {{ .Values.env.NODE_ENV }}
           - name: MONGODB_URI
             value: {{ .Values.env.MONGODB_URI }}
+          - name: SOME_32BYTE_BASE64_STRING
+            value: {{ .Values.env.SOME_32BYTE_BASE64_STRING }}
+          - name: SOME_64BYTE_BASE64_STRING
+            value: {{ .Values.env.SOME_64BYTE_BASE64_STRING }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -4,11 +4,13 @@
 
 replicaCount: 1
 
+# TODO: These values are ideally injected into the container during the deployment process.
 env:
  MONGODB_URI: mongodb://hello-node-release-mongodb:27017/hello-node
  NODE_ENV: development
  PORT: 3000
-
+ SOME_32BYTE_BASE64_STRING: vPh+2CCmJWVRjdQRHjRGOW+3Dwa7LmYDI7LBC0N9lBI=
+ SOME_64BYTE_BASE64_STRING: mSCKDm4JezPdCoyzjDd/NaSF3x9qbJJ2/aPkAA/jXKzD+sFRWIg4BGwuqoI0OeWR80kPeaG6REyqVwjx8un52w==
 image:
   repository: ananthrs/hello-node
   pullPolicy: IfNotPresent
