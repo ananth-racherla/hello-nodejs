@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import routes from '../api/index.js';
 import {errors} from 'celebrate';
+import promBundle from 'express-prom-bundle';
 
 export default app => {
     // Body parser middleware transforms req.body string to json
@@ -9,6 +10,10 @@ export default app => {
 
     // Default cors config allows all origins
     app.use(cors());
+
+    // Configure prometheus metrics
+    const metricsMiddleware = promBundle({includeMethod: true});
+    app.use(metricsMiddleware);
 
     // Use application routes
     app.use('/', routes());
